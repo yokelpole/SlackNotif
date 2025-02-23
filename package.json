@@ -1,0 +1,21 @@
+{
+  "name": "SlackNotif",
+  "version": "1.0.0",
+  "description": "Simple script to let you know when you're needed in slack",
+  "scripts": {
+    "slackNotif": "npx tsx ./slackNotif.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.4.1",
+  "devDependencies": {
+    "@types/node": "^22.13.5",
+    "@types/ws": "^8.5.14",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "ws": "^8.18.1"
+  }
+}
