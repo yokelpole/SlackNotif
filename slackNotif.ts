@@ -49,6 +49,10 @@ async function getUserInfo(userId: string) {
 
   const userInfoData = await userInfoResp.json();
   if (!userInfoData.ok) {
+    if (userInfoData.error === "user_not_found") {
+      return null;
+    }
+
     console.log(userInfoData);
     throw "User info data response not ok";
   }
@@ -125,7 +129,7 @@ async function run() {
 
       if (!nameMap[user]) {
         const userInfo = await getUserInfo(user);
-        nameMap[user] = userInfo;
+        if (userInfo) nameMap[user] = userInfo;
       }
 
       if (!channelMap[channel]) {
@@ -133,12 +137,16 @@ async function run() {
         channelMap[channel] = channelInfo;
       }
 
+      if (!parsedData.text) return;
+
       if (
         channelMap[channel].is_im || // DM
+        (channelMap[channel].name === "lunch" &&
+          parsedData.text.includes(":hungry_greendale_human_being:")) ||
         parsedData.text.includes(tokenOwnerUserId) || // User directly tagged
         parsedData.text
           .toLowerCase()
-          .includes(nameMap[user].name.toLowerCase()) || // User name mentioned
+          .includes(nameMap[user]?.name.toLowerCase()) || // User name mentioned
         parsedData.text.includes("!channel") || // Channel-wide mention
         parsedData.text.includes("!here") // Channel-wide mention
       ) {
@@ -148,7 +156,7 @@ async function run() {
         }
 
         console.log(
-          `🚨 ${nameMap[user].name} @ ${channelMap[channel].name ? `#${channelMap[channel].name}` : "DM"}: ${formattedText}`,
+          `🚨 ${nameMap[user]?.name} @ ${channelMap[channel].name ? `#${channelMap[channel].name}` : "DM"}: ${formattedText}`,
         );
 
         // System bell
